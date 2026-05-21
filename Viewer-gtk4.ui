@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 1.0.1 -->
+<interface>
+  <!-- interface-name Viewer-gtk4.ui -->
+  <requires lib="gtk" version="4.20"/>
+  <object class="GtkWindow" id="top_window">
+    <property name="default-height">450</property>
+    <property name="default-width">800</property>
+    <property name="title">GTK-4 Viewer</property>
+    <signal name="destroy" handler="on_window1_destroy"/>
+    <signal name="close-request" handler="on_window1_destroy"/>
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkPicture" id="image_window">
+            <property name="focusable">True</property>
+            <property name="vexpand">True</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="homogeneous">True</property>
+            <property name="spacing">39</property>
+            <child>
+              <object class="GtkButton" id="prev_button">
+                <property name="label">_Previous</property>
+                <property name="use-underline">True</property>
+                <signal name="mnemonic-activate" handler="on_prev"/>
+                <signal name="clicked" handler="on_prev"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="halign">center</property>
+                <property name="label">_Next</property>
+                <property name="use-underline">True</property>
+                <property name="width-request">100</property>
+                <signal name="clicked" handler="on_next"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="halign">center</property>
+                <property name="label">_About</property>
+                <property name="use-underline">True</property>
+                <property name="width-request">100</property>
+                <signal name="clicked" handler="on_about"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="halign">end</property>
+                <property name="label">_Quit</property>
+                <property name="margin-end">25</property>
+                <property name="use-underline">True</property>
+                <property name="width-request">100</property>
+                <signal name="clicked" handler="on_quit"/>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkMessageDialog" id="alert_window">
+    <property name="buttons">ok</property>
+    <property name="halign">center</property>
+    <property name="modal">True</property>
+    <property name="title">Alert</property>
+    <property name="transient-for">top_window</property>
+    <signal name="response" handler="on_alert_close"/>
+    <child internal-child="message_area">
+      <object class="GtkBox" id="alert_message">
+        <property name="vexpand">True</property>
+        <child>
+          <object class="GtkLabel" id="alert_label"/>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

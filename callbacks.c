@@ -186,7 +186,7 @@ G_MODULE_EXPORT void
 on_fill()
 {
     GtkPicture	*pic;
-    static int	can_shrink = 0;
+    static int	can_shrink = TRUE;
 
     pic = (GtkPicture *)gtk_builder_get_object(ui_xml, "image_window");
     can_shrink = !can_shrink;

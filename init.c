@@ -6,12 +6,14 @@
 
 #define PREV	0
 #define NEXT	1
-#define QUIT	2
+#define FILL	2
+#define QUIT	3
 
 GtkBuilder		*ui_xml;
 extern void		on_prev();
 extern void		on_next();
 extern void		on_quit();
+extern void		on_fill();
 
 typedef struct {
     char	*fmt_string;
@@ -19,12 +21,13 @@ typedef struct {
 } variant_t;
 
 variant_t variants[] = {
-    { "P|P",		PREV },
+    { "P|p",		PREV },
     { "Left",		PREV },
     { "Up",		PREV },
     { "N|n",		NEXT },
     { "Right",		NEXT },
     { "Down",		NEXT },
+    { "F|f",		FILL },
     { "Q|a",		QUIT },
     { NULL,			  0    }
 };
@@ -63,6 +66,7 @@ key_action(GtkWidget *w, GVariant *v, gpointer p)
     {
 	case PREV: on_prev(); break;
 	case NEXT: on_next(); break;
+	case FILL: on_fill(); break;
 	case QUIT: on_quit(); break;
     }
     return(1);

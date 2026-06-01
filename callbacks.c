@@ -180,3 +180,15 @@ on_next()
     else
 	show_file(filenum+1);
 }
+
+/********************            ON_FILL             ********************/
+G_MODULE_EXPORT void
+on_fill()
+{
+    GtkPicture	*pic;
+    static int	can_shrink = 0;
+
+    pic = (GtkPicture *)gtk_builder_get_object(ui_xml, "image_window");
+    can_shrink = !can_shrink;
+    gtk_picture_set_can_shrink(pic, can_shrink);
+}

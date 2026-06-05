@@ -10,16 +10,15 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <gtk/gtk.h>
-#include <gdk/gdkkeysyms.h>
-#include <glycin.h>
-#include <glycin-gtk4.h>
 #include "viewer.h"
 
 extern GtkBuilder	*ui_xml;
 extern int		done;
+extern void		show_file(int filenum);
+extern void		toggle_fill();
 
-int			filenum, num_files;
-char			*filenames[MAX_FILES];
+extern int		filenum, num_files;
+extern char		*filenames[MAX_FILES];
 
 /********************       ON_WINDOW1_DESTROY       ********************/
 G_MODULE_EXPORT void
@@ -98,69 +97,6 @@ on_about()
     alert("GTK-4 Image Viewer version %s", VERSION);
 }
 
-/********************                X               ********************/
-void
-remove_from_list(int num)
-{
-    int 	i;
-
-    for (i = num; i < num_files-1; ++i)
-	filenames[i] = filenames[i+1];
-    --num_files;
-}
-
-/********************           SHOW_FILE            ********************/
-void
-show_file(int num)
-{
-    GtkWindow		*window;
-    GtkPicture		*gtk_pic;
-    GFile		*gfile;
-    GError		*error;
-    static GdkTexture	*texture = NULL;
-    static GlyLoader	*loader = NULL;
-    static GlyImage	*image = NULL;
-    static GlyFrame	*frame = NULL;
-
-    if (texture)
-	g_object_unref((GObject *)texture);
-    if (loader)
-	g_object_unref((GObject *)loader);
-    if (image)
-	g_object_unref((GObject *)image);
-    if (frame)
-	g_object_unref((GObject *)frame);
-    texture = NULL;
-    loader = NULL;
-    image = NULL;
-    frame = NULL;
-
-    error = NULL;
-    gfile = g_file_new_for_path (filenames[num]);
-    loader = gly_loader_new(gfile);
-    image = gly_loader_load(loader, &error);
-    if (!error)
-	frame = gly_image_next_frame(image, &error);
-    if (error)
-    {
-	alert(error->message);
-	g_clear_error(&error);
-	g_object_unref((GObject *)gfile);
-	remove_from_list(num);
-	return;
-    }
-
-    texture = gly_gtk_frame_get_texture(frame);
-    gtk_pic = (GtkPicture *)gtk_builder_get_object(ui_xml, "image_window");
-    gtk_picture_set_paintable(gtk_pic, (GdkPaintable *)texture);
-    
-    window = (GtkWindow *)gtk_builder_get_object(ui_xml, "top_window");
-    gtk_window_set_title(window, filenames[num]);
-
-    g_object_unref((GObject *)gfile);
-    filenum = num;
-}
-
 /********************            ON_PREV             ********************/
 G_MODULE_EXPORT void
 on_prev()
@@ -185,10 +121,5 @@ on_next()
 G_MODULE_EXPORT void
 on_fill()
 {
-    GtkPicture	*pic;
-    static int	can_shrink = TRUE;
-
-    pic = (GtkPicture *)gtk_builder_get_object(ui_xml, "image_window");
-    can_shrink = !can_shrink;
-    gtk_picture_set_can_shrink(pic, can_shrink);
+    toggle_fill();
 }

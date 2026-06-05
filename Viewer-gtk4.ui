@@ -26,8 +26,11 @@
             <property name="spacing">39</property>
             <child>
               <object class="GtkButton" id="prev_button">
+                <property name="halign">start</property>
                 <property name="label">_Previous</property>
+                <property name="margin-start">25</property>
                 <property name="use-underline">True</property>
+                <property name="width-request">100</property>
                 <signal name="mnemonic-activate" handler="on_prev"/>
                 <signal name="clicked" handler="on_prev"/>
               </object>

@@ -4,16 +4,12 @@
 #include "viewer.h"
 #include "gtkbuilder.h"
 
-#define PREV	0
-#define NEXT	1
-#define FILL	2
-#define QUIT	3
-
 GtkBuilder		*ui_xml;
 extern void		on_prev();
 extern void		on_next();
 extern void		on_quit();
 extern void		on_fill();
+extern void		scale(int);
 
 typedef struct {
     char	*fmt_string;
@@ -29,6 +25,8 @@ variant_t variants[] = {
     { "Down",		NEXT },
     { "F|f",		FILL },
     { "Q|a",		QUIT },
+    { "plus",		SCALE_UP },
+    { "minus",		SCALE_DOWN },
     { NULL,			  0    }
 };
 
@@ -68,6 +66,8 @@ key_action(GtkWidget *w, GVariant *v, gpointer p)
 	case NEXT: on_next(); break;
 	case FILL: on_fill(); break;
 	case QUIT: on_quit(); break;
+	case SCALE_UP: scale(SCALE_UP); break;
+	case SCALE_DOWN: scale(SCALE_DOWN); break;
     }
     return(1);
 }

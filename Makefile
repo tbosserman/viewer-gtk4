@@ -4,17 +4,19 @@ CFLAGS += $(shell pkg-config --cflags glycin-gtk4-2)
 LDLIBS != pkg-config --libs gtk4
 LDLIBS += $(shell pkg-config --libs glycin-2)
 LDLIBS += $(shell pkg-config --libs glycin-gtk4-2)
-LDLIBS += -lcrypto
+LDLIBS += -lcrypto -lm
 LDFLAGS=-Wl,--export-dynamic
 
 all: gen viewer
 
-viewer: main.o callbacks.o init.o
+viewer: main.o callbacks.o init.o show.o
 	$(CC) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
 main.o: main.c viewer.h gtkbuilder.h
 
 callbacks.o: callbacks.c viewer.h
+
+show.o: show.c viewer.h
 
 gen: gen.c
 	$(CC) -o gen gen.c

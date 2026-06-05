@@ -12,3 +12,4 @@
 #define QUIT		3
 #define SCALE_UP	4
 #define SCALE_DOWN	5
+#define SCALE_FILL	6

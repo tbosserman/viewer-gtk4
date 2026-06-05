@@ -15,7 +15,7 @@
 extern GtkBuilder	*ui_xml;
 extern int		done;
 extern void		show_file(int filenum);
-extern void		toggle_fill();
+extern void		scale(int direction);
 
 extern int		filenum, num_files;
 extern char		*filenames[MAX_FILES];
@@ -121,5 +121,5 @@ on_next()
 G_MODULE_EXPORT void
 on_fill()
 {
-    toggle_fill();
+    scale(SCALE_FILL);
 }

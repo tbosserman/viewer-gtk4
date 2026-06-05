@@ -12,7 +12,9 @@ all: gen viewer
 viewer: main.o callbacks.o init.o show.o
 	$(CC) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
-main.o: main.c viewer.h gtkbuilder.h
+main.o: main.c viewer.h
+
+init.o: init.c gtkbuilder.h viewer.h
 
 callbacks.o: callbacks.c viewer.h
 

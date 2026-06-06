@@ -27,6 +27,7 @@ variant_t variants[] = {
     { "Q|a",		QUIT },
     { "plus",		SCALE_UP },
     { "minus",		SCALE_DOWN },
+    { "1",		SCALE_1_TO_1 },
     { NULL,			  0    }
 };
 
@@ -66,8 +67,12 @@ key_action(GtkWidget *w, GVariant *v, gpointer p)
 	case NEXT: on_next(); break;
 	case FILL: on_fill(); break;
 	case QUIT: on_quit(); break;
-	case SCALE_UP: scale(SCALE_UP); break;
-	case SCALE_DOWN: scale(SCALE_DOWN); break;
+
+	case SCALE_UP:
+	case SCALE_DOWN:
+	case SCALE_1_TO_1:
+	    scale(vp->action);
+	    break;
     }
     return(1);
 }

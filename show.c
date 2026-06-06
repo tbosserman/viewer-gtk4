@@ -57,16 +57,16 @@ scale(int direction)
 	    gtk_picture_set_can_shrink(gtk_pic, TRUE);
 	    break;
 	case SCALE_UP:
-	    if ((scale_factor += 0.1) > 1.0)
-		scale_factor = 1.0;
+	    scale_factor += 0.1;
 	    break;
 	case SCALE_DOWN:
 	    if ((scale_factor -= 0.1) < min_factor)
 		scale_factor = min_factor;
 	    break;
+	case SCALE_1_TO_1:
+	    scale_factor = 1.0;
+	    break;
     }
-    if (scale_factor > 1.0)
-	scale_factor = 1.0;
     // At startup, things are weird. Widget_width & height are 0. So this
     // next 4 lines are pretty much a hack to account for that.
     if (scale_factor <= 0.0)
@@ -78,7 +78,7 @@ scale(int direction)
 	g_object_unref((GObject *)paintable);
 
     snap = gtk_snapshot_new();
-    if (direction == FILL)
+    if (direction == FILL || direction == SCALE_1_TO_1)
     {
 	width = image_width;
 	height = image_height;

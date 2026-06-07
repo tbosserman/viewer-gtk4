@@ -53,7 +53,7 @@ scale(int direction)
     switch(direction)
     {
 	case SCALE_FILL:
-	    scale_factor = min_factor;
+	    scale_factor = 1.0;
 	    gtk_picture_set_can_shrink(gtk_pic, TRUE);
 	    break;
 	case SCALE_UP:

@@ -53,7 +53,7 @@ scale(int direction)
     switch(direction)
     {
 	case SCALE_FILL:
-	    scale_factor = 1.0;
+	    scale_factor = min_factor;
 	    gtk_picture_set_can_shrink(gtk_pic, TRUE);
 	    break;
 	case SCALE_UP:
@@ -98,6 +98,7 @@ scale(int direction)
 void
 show_file(int num)
 {
+    char		title[1024];
     GtkWindow		*window;
     GFile		*gfile;
     GlyLoader		*loader;
@@ -136,7 +137,9 @@ show_file(int num)
     scale(SCALE_FILL);
     
     window = (GtkWindow *)gtk_builder_get_object(ui_xml, "top_window");
-    gtk_window_set_title(window, filenames[num]);
+    snprintf(title, sizeof(title), "%s (%dx%d)", filenames[num], 
+	image_width, image_height);
+    gtk_window_set_title(window, title);
 
     g_object_unref((GObject *)gfile);
     filenum = num;

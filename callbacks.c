@@ -17,8 +17,10 @@ extern int		done;
 extern void		show_file(int filenum);
 extern void		scale(int direction);
 
-extern int		filenum, num_files;
+extern int		filenum, num_files, image_width, image_height;
 extern char		*filenames[MAX_FILES];
+
+static FILE		*scriptfp = NULL;
 
 /********************       ON_WINDOW1_DESTROY       ********************/
 G_MODULE_EXPORT void
@@ -122,4 +124,27 @@ G_MODULE_EXPORT void
 on_fill()
 {
     scale(SCALE_FILL);
+}
+
+G_MODULE_EXPORT void
+click_event(GtkEventController *gesture, gdouble x, gdouble y, gpointer data)
+{
+    GtkWidget	*widget;
+    int		widget_width, width, height, xoffset, yoffset;
+    gdouble	scale_factor;
+    char	*fname;
+
+    if (scriptfp == NULL)
+	scriptfp = fopen("magick.sh", "a");
+    widget = (GtkWidget *)gtk_builder_get_object(ui_xml, "scroll_window");
+    widget_width = gtk_widget_get_width(widget);
+    scale_factor = (gdouble)image_width / (gdouble)widget_width;
+    xoffset = (x * scale_factor) - 200;
+    yoffset = (y * scale_factor) - 40;
+    width = 400;
+    height = 400;
+    fname = filenames[filenum];
+    fprintf(scriptfp, "magick FRAMES/%s -crop %dx%d+%d+%d, CROP/%s\n",
+	fname, width, height, xoffset, yoffset, fname);
+    fflush(scriptfp);
 }

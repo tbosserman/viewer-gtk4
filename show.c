@@ -14,7 +14,7 @@ static float		scale_factor = 1.0;
 static GdkTexture	*texture = NULL;
 static GlyFrame		*frame = NULL;
 static GdkPaintable	*paintable = NULL;
-static uint32_t		image_width, image_height;
+uint32_t		image_width, image_height;
 
 /********************        REMOVE_FROM_LIST        ********************/
 void

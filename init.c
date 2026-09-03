@@ -4,12 +4,14 @@
 #include "viewer.h"
 #include "gtkbuilder.h"
 
-GtkBuilder		*ui_xml;
-extern void		on_prev();
-extern void		on_next();
-extern void		on_quit();
-extern void		on_fill();
-extern void		scale(int);
+GtkBuilder	*ui_xml;
+extern void	on_prev();
+extern void	on_next();
+extern void	on_quit();
+extern void	on_fill();
+extern void	scale(int);
+extern void	click_event(GtkEventController *, gdouble, gdouble, gpointer);
+
 
 typedef struct {
     char	*fmt_string;
@@ -88,6 +90,8 @@ init(char *ui_file, char *geometry)
     GtkShortcutTrigger  *trigger;
     GtkShortcutAction   *action;
     GtkWidgetClass      *class;
+    GtkGesture		*gesture;
+    GtkWidget		*widget;
 
     if (!geometry)
 	geometry = strdup(DEFAULT_GEOMETRY);
@@ -113,6 +117,11 @@ init(char *ui_file, char *geometry)
 	shortcut = gtk_shortcut_new(trigger, action);
 	gtk_widget_class_add_shortcut(class, shortcut);
     }
+
+    widget = (GtkWidget *)gtk_builder_get_object(ui_xml, "image_window");
+    gesture = gtk_gesture_click_new();
+    gtk_widget_add_controller(widget, GTK_EVENT_CONTROLLER(gesture));
+    g_signal_connect(gesture, "pressed", G_CALLBACK(click_event), NULL);
     
     gtk_window_present(window);
 }

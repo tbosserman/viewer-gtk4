@@ -88,4 +88,7 @@
       </object>
     </child>
   </object>
+  <object class="GdkCursor" id="my_cursor">
+    <property name="name">crosshair</property>
+  </object>
 </interface>

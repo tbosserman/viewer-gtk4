@@ -9,7 +9,7 @@ LDFLAGS=-Wl,--export-dynamic
 
 all: gen viewer
 
-viewer: main.o callbacks.o init.o show.o
+viewer: main.o callbacks.o init.o show.o cursor.o
 	$(CC) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
 main.o: main.c viewer.h
@@ -19,6 +19,8 @@ init.o: init.c gtkbuilder.h viewer.h
 callbacks.o: callbacks.c viewer.h
 
 show.o: show.c viewer.h
+
+cursor.o: cursor.c
 
 gen: gen.c
 	$(CC) -o gen gen.c

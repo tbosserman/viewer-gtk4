@@ -5,13 +5,14 @@
 #include "gtkbuilder.h"
 
 GtkBuilder	*ui_xml;
+
 extern void	on_prev();
 extern void	on_next();
 extern void	on_quit();
 extern void	on_fill();
 extern void	scale(int);
 extern void	click_event(GtkEventController *, gdouble, gdouble, gpointer);
-
+extern void	set_cursor(double);
 
 typedef struct {
     char	*fmt_string;
@@ -30,6 +31,8 @@ variant_t variants[] = {
     { "plus",		SCALE_UP },
     { "minus",		SCALE_DOWN },
     { "1",		SCALE_1_TO_1 },
+    { "<Ctrl>plus",	CTRL_PLUS },
+    { "<Ctrl>minus",	CTRL_MINUS },
     { NULL,			  0    }
 };
 
@@ -74,6 +77,12 @@ key_action(GtkWidget *w, GVariant *v, gpointer p)
 	case SCALE_DOWN:
 	case SCALE_1_TO_1:
 	    scale(vp->action);
+	    break;
+	case CTRL_PLUS:
+	    printf("<SHIFT>plus\n");
+	    break;
+	case CTRL_MINUS:
+	    printf("<SHIFT>minus\n");
 	    break;
     }
     return(1);
@@ -122,6 +131,7 @@ init(char *ui_file, char *geometry)
     gesture = gtk_gesture_click_new();
     gtk_widget_add_controller(widget, GTK_EVENT_CONTROLLER(gesture));
     g_signal_connect(gesture, "pressed", G_CALLBACK(click_event), NULL);
+    set_cursor(1.0);
     
     gtk_window_present(window);
 }

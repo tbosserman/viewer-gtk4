@@ -14,3 +14,5 @@
 #define SCALE_DOWN	5
 #define SCALE_FILL	6
 #define SCALE_1_TO_1	7
+#define	CTRL_PLUS	8
+#define CTRL_MINUS	9

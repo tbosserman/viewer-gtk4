@@ -80,9 +80,11 @@ key_action(GtkWidget *w, GVariant *v, gpointer p)
 	    break;
 	case CTRL_PLUS:
 	    printf("<SHIFT>plus\n");
+	    set_cursor(0.2);
 	    break;
 	case CTRL_MINUS:
 	    printf("<SHIFT>minus\n");
+	    set_cursor(-0.2);
 	    break;
     }
     return(1);
@@ -131,7 +133,7 @@ init(char *ui_file, char *geometry)
     gesture = gtk_gesture_click_new();
     gtk_widget_add_controller(widget, GTK_EVENT_CONTROLLER(gesture));
     g_signal_connect(gesture, "pressed", G_CALLBACK(click_event), NULL);
-    set_cursor(1.0);
+    set_cursor(0.0);
     
     gtk_window_present(window);
 }

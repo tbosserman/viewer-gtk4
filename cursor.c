@@ -1,12 +1,16 @@
 #include <gtk/gtk.h>
 
-#define CURSOR_PATH	"/usr/share/icons/breeze_cursors/cursors_scalable"
-#define CURSOR_FILE	CURSOR_PATH "/crosshair/crosshair.svg"
+//#define CURSOR_PATH	"/usr/share/icons/breeze_cursors/cursors_scalable"
+//#define CURSOR_FILE	CURSOR_PATH "/crosshair/crosshair.svg"
+#define CURSOR_PATH	"/home/tboss/Pictures"
+#define CURSOR_FILE	CURSOR_PATH "/black_circle.png"
 
 static GdkCursor	*cursor = NULL;
 static GdkPixbuf	*cursor_pixbuf = NULL;
-static double		cursor_scale = 1.0;
 static int		cursor_width, cursor_height;
+static int		hot_x, hot_y;
+static double		cursor_scale = 1.0;
+static double		scaled_width, scaled_height;
 extern GtkBuilder	*ui_xml;
 
 /********************                X               ********************/
@@ -19,8 +23,6 @@ set_cursor(double scale_incr)
     GdkPixbuf	*pixbuf;
     GError	*error;
     GtkWidget	*widget;
-    float	scaled_width, scaled_height;
-    int		hot_x, hot_y;
 
     error = NULL;
     if (cursor_pixbuf == NULL)
@@ -37,13 +39,13 @@ set_cursor(double scale_incr)
     }
 
     cursor_scale += scale_incr;
-    scaled_width = (float)cursor_width * cursor_scale;
-    scaled_height = (float)cursor_height * cursor_scale;
-    printf("Cursor is %d x %d pixels\n", cursor_width, cursor_height);
-    printf("Scaled: %.2f x %.2f\n", scaled_width, scaled_height);
-
+    scaled_width = (double)cursor_width * cursor_scale;
+    scaled_height = (double)cursor_height * cursor_scale;
     hot_x = (scaled_width + 0.5) / 2;
     hot_y = (scaled_height + 0.5) / 2;
+    printf("Cursor is %d x %d pixels\n", cursor_width, cursor_height);
+    printf("Scaled: %.2f x %.2f\n", scaled_width, scaled_height);
+    printf("hot_X = %d  hot_Y=%d\n", hot_x, hot_y);
     if (cursor)
 	g_object_unref(cursor);
 
@@ -64,9 +66,23 @@ G_GNUC_END_IGNORE_DEPRECATIONS
     gtk_widget_set_cursor(widget, cursor);
 }
 
-/********************    GET_CURRENT_CURSOR_SCALE    ********************/
+/********************        GET_CURSOR_SCALE        ********************/
 double
-get_current_cursor_scale()
+get_cursor_scale()
 {
     return cursor_scale;
+}
+
+/********************        GET_CURSOR_WIDTH        ********************/
+int
+get_cursor_width()
+{
+    return scaled_width;
+}
+
+/********************       GET_CURSOR_HEIGHT        ********************/
+int
+get_cursor_height()
+{
+    return scaled_height;
 }

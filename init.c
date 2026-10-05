@@ -79,11 +79,9 @@ key_action(GtkWidget *w, GVariant *v, gpointer p)
 	    scale(vp->action);
 	    break;
 	case CTRL_PLUS:
-	    printf("<SHIFT>plus\n");
 	    set_cursor(0.2);
 	    break;
 	case CTRL_MINUS:
-	    printf("<SHIFT>minus\n");
 	    set_cursor(-0.2);
 	    break;
     }

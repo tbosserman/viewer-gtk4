@@ -3,7 +3,8 @@
 //#define CURSOR_PATH	"/usr/share/icons/breeze_cursors/cursors_scalable"
 //#define CURSOR_FILE	CURSOR_PATH "/crosshair/crosshair.svg"
 #define CURSOR_PATH	"/home/tboss/Pictures"
-#define CURSOR_FILE	CURSOR_PATH "/black_circle.png"
+//#define CURSOR_FILE	CURSOR_PATH "/black_circle.png"
+#define CURSOR_FILE	CURSOR_PATH "/crosshair_red.png"
 
 static GdkCursor	*cursor = NULL;
 static GdkPixbuf	*cursor_pixbuf = NULL;

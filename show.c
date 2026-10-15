@@ -129,6 +129,14 @@ show_file(int num)
 	return;
     }
     frame = gly_image_next_frame(image, &error);
+    if (error)
+    {
+	alert(error->message);
+	g_clear_error(&error);
+	g_object_unref((GObject *)gfile);
+	remove_from_list(num);
+	return;
+    }
     g_object_unref((GObject *)image);
 
     image_width = gly_frame_get_width(frame);

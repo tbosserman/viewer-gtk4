@@ -4,7 +4,8 @@
 //#define CURSOR_FILE	CURSOR_PATH "/crosshair/crosshair.svg"
 #define CURSOR_PATH	"/home/tboss/Pictures"
 //#define CURSOR_FILE	CURSOR_PATH "/black_circle.png"
-#define CURSOR_FILE	CURSOR_PATH "/crosshair_red.png"
+//#define CURSOR_FILE	CURSOR_PATH "/crosshair_red.png"
+#define CURSOR_FILE	CURSOR_PATH "/red_circle.svg"
 
 static GdkCursor	*cursor = NULL;
 static GdkPixbuf	*cursor_pixbuf = NULL;

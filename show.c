@@ -123,12 +123,21 @@ show_file(int num)
     if (error)
     {
 	alert(error->message);
-	g_clear_error(&error);
 	g_object_unref((GObject *)gfile);
 	remove_from_list(num);
+	g_error_free(error);
 	return;
     }
     frame = gly_image_next_frame(image, &error);
+    if (error)
+    {
+	fprintf(stderr, "error in gly_image_next_frame: %s\n", error->message);
+	alert(error->message);
+	g_object_unref((GObject *)gfile);
+	remove_from_list(num);
+	g_error_free(error);
+	return;
+    }
     g_object_unref((GObject *)image);
 
     image_width = gly_frame_get_width(frame);

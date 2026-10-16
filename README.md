@@ -22,3 +22,9 @@ flatpak install ar.xjuan.Cambalache
 ### KNOWN BUGS
 1. Not all the accelerators work. You can press 'N', 'P', and 'Q', but the
 arrows don't work. Haven't figured out why yet.
+
+### RANDOM NOTES
+1. The libglycin-2 shipped with OpenSUSE Tumbleweed doesn't include support
+for HEIC images. Really, the problem is the the libheic delivered with
+tumbleweed. Anyway, I built both glycin and libheif from source. It was kinda
+painful. I need to document how I did it.

@@ -5,11 +5,17 @@
 #include "gtkbuilder.h"
 
 GtkBuilder		*ui_xml;
+
+extern int		default_width, default_height;
+
 extern void		on_prev();
 extern void		on_next();
 extern void		on_quit();
 extern void		on_fill();
 extern void		scale(int);
+extern void		pinch_zoom(GtkGestureZoom *, double, GtkWidget *);
+extern void		pinch_begin(GtkGestureZoom *, double, GtkWidget *);
+extern void		pinch_end(GtkGestureZoom *, double, GtkWidget *);
 
 typedef struct {
     char	*fmt_string;
@@ -81,9 +87,11 @@ key_action(GtkWidget *w, GVariant *v, gpointer p)
 void
 init(char *ui_file, char *geometry)
 {
-    int			i, width, height;
+    int			i;
     char		*s;
     GtkWindow		*window;
+    GtkWidget		*picture;
+    GtkGesture		*gesture;
     GtkShortcut		*shortcut;
     GtkShortcutTrigger  *trigger;
     GtkShortcutAction   *action;
@@ -92,9 +100,9 @@ init(char *ui_file, char *geometry)
     if (!geometry)
 	geometry = strdup(DEFAULT_GEOMETRY);
     s = strtok(geometry, "x");
-    width = atoi(s);
+    default_width = atoi(s);
     s = strtok(NULL, "x");
-    height = atoi(s);
+    default_height = atoi(s);
 
     gtk_init();
     if (ui_file)
@@ -103,7 +111,7 @@ init(char *ui_file, char *geometry)
 	load_ui();
 
     window = (GtkWindow *)gtk_builder_get_object(ui_xml, "top_window");
-    gtk_window_set_default_size(window, width, height);
+    gtk_window_set_default_size(window, default_width, default_height);
     gtk_widget_grab_focus((GtkWidget *)window);
     class = GTK_WIDGET_GET_CLASS(GTK_WIDGET(window));
     for (i = 0; variants[i].fmt_string != NULL; ++i)
@@ -113,6 +121,15 @@ init(char *ui_file, char *geometry)
 	shortcut = gtk_shortcut_new(trigger, action);
 	gtk_widget_class_add_shortcut(class, shortcut);
     }
+
+    picture = GTK_WIDGET(gtk_builder_get_object(ui_xml, "image_window"));
+    gesture = gtk_gesture_zoom_new();
+    g_signal_connect(gesture, "scale-changed", G_CALLBACK(pinch_zoom), picture);
+    g_signal_connect(gesture, "begin", G_CALLBACK(pinch_begin), picture);
+    g_signal_connect(gesture, "end", G_CALLBACK(pinch_end), picture);
+    gtk_event_controller_set_propagation_phase(GTK_EVENT_CONTROLLER(gesture),
+	GTK_PHASE_BUBBLE);
+    gtk_widget_add_controller(picture, GTK_EVENT_CONTROLLER(gesture));
     
     gtk_window_present(window);
 }

@@ -8,6 +8,7 @@ extern GtkBuilder	*ui_xml;
 extern void		alert(const char *fmt, ...);
 
 int			filenum, num_files;
+int			default_width, default_height;
 char			*filenames[MAX_FILES];
 
 static float		scale_factor = 1.0;
@@ -15,6 +16,8 @@ static GdkTexture	*texture = NULL;
 static GlyFrame		*frame = NULL;
 static GdkPaintable	*paintable = NULL;
 static uint32_t		image_width, image_height;
+
+/*********************               X               ********************/
 
 /********************        REMOVE_FROM_LIST        ********************/
 void
@@ -42,9 +45,9 @@ scale(int direction)
 
     widget = (GtkWidget *)gtk_builder_get_object(ui_xml, "scroll_window");
     if ((widget_width = gtk_widget_get_width(widget)) == 0)
-	widget_width = image_width;
+	widget_width = default_width;
     if ((widget_height = gtk_widget_get_height(widget)) == 0)
-	widget_height = image_height;
+	widget_height = default_height;
     xfactor = (float)widget_width / (float)image_width;
     yfactor = (float)widget_height / (float)image_height;
     min_factor = fmin(xfactor, yfactor);
@@ -151,4 +154,26 @@ show_file(int num)
 
     g_object_unref((GObject *)gfile);
     filenum = num;
+}
+
+/*********************          PINCH_ZOOM           ********************/
+void
+pinch_zoom(GtkGestureZoom *gesture, double scale, GtkWidget *widget)
+{
+    double	delta;
+
+    delta = gtk_gesture_zoom_get_scale_delta(gesture);
+    fprintf(stderr, "Inside pinch_zoom scale=%.2g  delta=%.2g\n", scale, delta);
+}
+
+void
+pinch_begin(GtkGestureZoom *gesture, double scale, GtkWidget *widget)
+{
+    fprintf(stderr, "Begin pinch\n");
+}
+
+void
+pinch_end(GtkGestureZoom *gesture, double scale, GtkWidget *widget)
+{
+    fprintf(stderr, "End pinch\n");
 }

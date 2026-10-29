@@ -70,11 +70,7 @@ scale(int direction)
 	    scale_factor = 1.0;
 	    break;
     }
-    // At startup, things are weird. Widget_width & height are 0. So this
-    // next 4 lines are pretty much a hack to account for that.
-    if (scale_factor <= 0.0)
-	scale_factor = 1.0;
-    else if (direction != SCALE_FILL)
+    if (direction != SCALE_FILL)
 	gtk_picture_set_can_shrink(gtk_pic, FALSE);
 
     if (paintable)

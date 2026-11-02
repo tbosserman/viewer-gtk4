@@ -11,11 +11,12 @@ int			filenum, num_files;
 int			default_width, default_height;
 char			*filenames[MAX_FILES];
 
-static float		scale_factor = 1.0;
 static GdkTexture	*texture = NULL;
 static GlyFrame		*frame = NULL;
 static GdkPaintable	*paintable = NULL;
 static uint32_t		image_width, image_height;
+static float		scale_factor = 1.0;
+static float		pinch_base;
 
 /*********************               X               ********************/
 
@@ -34,7 +35,7 @@ remove_from_list(int num)
  ********************             SCALE              ********************
  ************************************************************************/
 void
-scale(int direction)
+scale(int operation, float new_factor)
 {
     GtkWidget		*widget;
     GtkSnapshot		*snap;
@@ -53,7 +54,7 @@ scale(int direction)
     min_factor = fmin(xfactor, yfactor);
     gtk_pic = (GtkPicture *)gtk_builder_get_object(ui_xml, "image_window");
 
-    switch(direction)
+    switch(operation)
     {
 	case SCALE_FILL:
 	    scale_factor = min_factor;
@@ -69,15 +70,19 @@ scale(int direction)
 	case SCALE_1_TO_1:
 	    scale_factor = 1.0;
 	    break;
+	case SCALE_SET:
+	    if ((scale_factor = new_factor) < min_factor)
+		scale_factor = min_factor;
+	    break;
     }
-    if (direction != SCALE_FILL)
+    if (operation != SCALE_FILL)
 	gtk_picture_set_can_shrink(gtk_pic, FALSE);
 
     if (paintable)
 	g_object_unref((GObject *)paintable);
 
     snap = gtk_snapshot_new();
-    if (direction == FILL || direction == SCALE_1_TO_1)
+    if (operation == FILL || operation == SCALE_1_TO_1)
     {
 	width = image_width;
 	height = image_height;
@@ -141,7 +146,7 @@ show_file(int num)
     image_width = gly_frame_get_width(frame);
     image_height = gly_frame_get_height(frame);
     texture = gly_gtk_frame_get_texture(frame);
-    scale(SCALE_FILL);
+    scale(SCALE_FILL, 0.0);
     
     window = (GtkWindow *)gtk_builder_get_object(ui_xml, "top_window");
     snprintf(title, sizeof(title), "%s (%dx%d)", filenames[num], 
@@ -154,22 +159,20 @@ show_file(int num)
 
 /*********************          PINCH_ZOOM           ********************/
 void
-pinch_zoom(GtkGestureZoom *gesture, double scale, GtkWidget *widget)
+pinch_zoom(GtkGestureZoom *gesture, double factor, GtkWidget *widget)
 {
-    double	delta;
-
-    delta = gtk_gesture_zoom_get_scale_delta(gesture);
-    fprintf(stderr, "Inside pinch_zoom scale=%.2g  delta=%.2g\n", scale, delta);
+    scale(SCALE_SET, pinch_base * factor);
 }
 
+/*********************         PINCH_BEGIN           ********************/
 void
 pinch_begin(GtkGestureZoom *gesture, double scale, GtkWidget *widget)
 {
-    fprintf(stderr, "Begin pinch\n");
+    pinch_base = scale_factor;
 }
 
+/*********************          PINCH_END            ********************/
 void
 pinch_end(GtkGestureZoom *gesture, double scale, GtkWidget *widget)
 {
-    fprintf(stderr, "End pinch\n");
 }

@@ -12,7 +12,7 @@ extern void		on_prev();
 extern void		on_next();
 extern void		on_quit();
 extern void		on_fill();
-extern void		scale(int);
+extern void		scale(int, float);
 extern void		pinch_zoom(GtkGestureZoom *, double, GtkWidget *);
 extern void		pinch_begin(GtkGestureZoom *, double, GtkWidget *);
 extern void		pinch_end(GtkGestureZoom *, double, GtkWidget *);
@@ -77,7 +77,7 @@ key_action(GtkWidget *w, GVariant *v, gpointer p)
 	case SCALE_UP:
 	case SCALE_DOWN:
 	case SCALE_1_TO_1:
-	    scale(vp->action);
+	    scale(vp->action, 0.0);
 	    break;
     }
     return(1);

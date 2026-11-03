@@ -60,42 +60,56 @@ load_ui()
     free(buf);
 }
 
-/********************           KEY_ACTION           ********************/
+/*********************         KEY_PRESSED           ********************/
 gboolean
-key_action(GtkWidget *w, GVariant *v, gpointer p)
+key_pressed(GtkEventControllerKey *self, guint keyval, guint keycode,
+    GdkModifierType state, gpointer user_data)
 {
-    variant_t	*vp;
+    gboolean	retcode;
 
-    vp = (variant_t *)p;
-    switch(vp->action)
+    retcode = true;
+    //fprintf(stderr, "key_pressed(): keyval=%04X\n", keyval);
+    switch(keyval)
     {
-	case PREV: on_prev(); break;
-	case NEXT: on_next(); break;
-	case FILL: on_fill(); break;
-	case QUIT: on_quit(); break;
-
-	case SCALE_UP:
-	case SCALE_DOWN:
-	case SCALE_1_TO_1:
-	    scale(vp->action, 0.0);
+	case GDK_KEY_Right:
+	case GDK_KEY_n:
+	    on_next();
 	    break;
+	case GDK_KEY_Left:
+	case GDK_KEY_p:
+	    on_prev();
+	    break;
+	case GDK_KEY_minus:
+	    scale(SCALE_DOWN, 0.0);
+	    break;
+	case GDK_KEY_plus:
+	    scale(SCALE_UP, 0.0);
+	    break;
+	case GDK_KEY_1:
+	    scale(SCALE_1_TO_1, 0.0);
+	    break;
+	case GDK_KEY_f:
+	    scale(SCALE_FILL, 0.0);
+	    break;
+	case GDK_KEY_q:
+	    on_quit();
+	    break;
+	default:
+	    retcode = false;
     }
-    return(1);
+
+    return(retcode);
 }
 
 /********************              INIT              ********************/
 void
 init(char *ui_file, char *geometry)
 {
-    int			i;
     char		*s;
     GtkWindow		*window;
     GtkWidget		*picture;
     GtkGesture		*gesture;
-    GtkShortcut		*shortcut;
-    GtkShortcutTrigger  *trigger;
-    GtkShortcutAction   *action;
-    GtkWidgetClass      *class;
+    GtkEventController	*controller;
 
     if (!geometry)
 	geometry = strdup(DEFAULT_GEOMETRY);
@@ -111,17 +125,16 @@ init(char *ui_file, char *geometry)
 	load_ui();
 
     window = (GtkWindow *)gtk_builder_get_object(ui_xml, "top_window");
-    gtk_window_set_default_size(window, default_width, default_height);
     gtk_widget_grab_focus((GtkWidget *)window);
-    class = GTK_WIDGET_GET_CLASS(GTK_WIDGET(window));
-    for (i = 0; variants[i].fmt_string != NULL; ++i)
-    {
-	trigger = gtk_shortcut_trigger_parse_string(variants[i].fmt_string);
-	action = gtk_callback_action_new(key_action, &variants[i], NULL);
-	shortcut = gtk_shortcut_new(trigger, action);
-	gtk_widget_class_add_shortcut(class, shortcut);
-    }
+    gtk_window_set_default_size(window, default_width, default_height);
 
+    // Setup a key press event handler so we can capture stuff like arrow keys
+    controller = gtk_event_controller_key_new();
+    g_signal_connect(controller, "key-pressed", G_CALLBACK(key_pressed), window);
+    gtk_event_controller_set_propagation_phase(controller, GTK_PHASE_BUBBLE);
+    gtk_widget_add_controller(GTK_WIDGET(window), GTK_EVENT_CONTROLLER(controller));
+
+    // Setup the handler for pinch / zoom events on the mouse pad.
     picture = GTK_WIDGET(gtk_builder_get_object(ui_xml, "image_window"));
     gesture = gtk_gesture_zoom_new();
     g_signal_connect(gesture, "scale-changed", G_CALLBACK(pinch_zoom), picture);

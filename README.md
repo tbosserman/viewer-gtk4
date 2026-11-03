@@ -19,12 +19,17 @@ flatpak install ar.xjuan.Cambalache
 3. libglycin-devel
 4. libglycin-gtk4-devel
 
-### KNOWN BUGS
-1. Not all the accelerators work. You can press 'N', 'P', and 'Q', but the
-arrows don't work. Haven't figured out why yet.
-
 ### RANDOM NOTES
 1. The libglycin-2 shipped with OpenSUSE Tumbleweed doesn't include support
 for HEIC images. Really, the problem is the the libheic delivered with
 tumbleweed. Anyway, I built both glycin and libheif from source. It was kinda
 painful. I need to document how I did it.
+2. As of "Version 2.0" pinch-to-zoom works! I also completely rewrite the
+event handler(s) so all the accelerator keys work:
+    a. 1 - Scale the image 1:1
+    b. f - Fit the image to the window
+    c. n or right arrow - next image
+    d. p or left arrow - previous image
+    e. q - quit
+    f. \+ - scale up
+    g. \- - scale down

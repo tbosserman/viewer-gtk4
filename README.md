@@ -26,10 +26,10 @@ tumbleweed. Anyway, I built both glycin and libheif from source. It was kinda
 painful. I need to document how I did it.
 2. As of "Version 2.0" pinch-to-zoom works! I also completely rewrite the
 event handler(s) so all the accelerator keys work:
-    a. 1 - Scale the image 1:1
-    b. f - Fit the image to the window
-    c. n or right arrow - next image
-    d. p or left arrow - previous image
-    e. q - quit
-    f. \+ - scale up
-    g. \- - scale down
+    * 1 - Scale the image 1:1
+    * f - Fit the image to the window
+    * n or right arrow - next image
+    * p or left arrow - previous image
+    * q - quit
+    * \+ - scale up
+    * \- - scale down

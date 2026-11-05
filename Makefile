@@ -1,4 +1,4 @@
-CFLAGS = -Wall -O
+CFLAGS = -Wall -g
 #CFLAGS += $(shell pkg-config --cflags gtk4)
 #CFLAGS += $(shell pkg-config --cflags glycin-2)
 CFLAGS += $(shell pkg-config --cflags glycin-gtk4-2)
@@ -10,7 +10,7 @@ LDFLAGS=-Wl,--export-dynamic
 
 all: gen viewer
 
-viewer: main.o callbacks.o init.o show.o help.o
+viewer: main.o callbacks.o init.o show.o help.o log.o
 	$(CC) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
 main.o: main.c viewer.h

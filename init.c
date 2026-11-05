@@ -18,6 +18,8 @@ extern void		scale(int, float);
 extern void		pinch_zoom(GtkGestureZoom *, double, GtkWidget *);
 extern void		pinch_begin(GtkGestureZoom *, double, GtkWidget *);
 extern void		pinch_end(GtkGestureZoom *, double, GtkWidget *);
+extern GLogWriterOutput	my_logger(GLogLevelFlags, const GLogField *, gsize,
+			    gpointer);
 
 typedef struct {
     char	*fmt_string;
@@ -150,6 +152,7 @@ init(char *ui_file, char *geometry)
     gtk_widget_add_controller(picture, GTK_EVENT_CONTROLLER(gesture));
 
     init_help();
+    g_log_set_writer_func(my_logger, NULL, NULL);
     
     gtk_window_present(window);
 }

@@ -8,6 +8,8 @@ GtkBuilder		*ui_xml;
 
 extern int		default_width, default_height;
 
+extern void		init_help();
+extern void		display_help();
 extern void		on_prev();
 extern void		on_next();
 extern void		on_quit();
@@ -94,6 +96,9 @@ key_pressed(GtkEventControllerKey *self, guint keyval, guint keycode,
 	case GDK_KEY_q:
 	    on_quit();
 	    break;
+	case GDK_KEY_question:
+	    display_help();
+	    break;
 	default:
 	    retcode = false;
     }
@@ -143,6 +148,8 @@ init(char *ui_file, char *geometry)
     gtk_event_controller_set_propagation_phase(GTK_EVENT_CONTROLLER(gesture),
 	GTK_PHASE_BUBBLE);
     gtk_widget_add_controller(picture, GTK_EVENT_CONTROLLER(gesture));
+
+    init_help();
     
     gtk_window_present(window);
 }

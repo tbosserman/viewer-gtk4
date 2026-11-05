@@ -7,14 +7,15 @@
 int
 main(int argc, char *argv[])
 {
-    int		ch, column, bol;
+    int		ch, prevch, column, bol;
 
     printf("static char *gtk_xml_buffer[] = {");
     column = 0;
     bol = TRUE;
+    prevch = 0;
     while ((ch = getchar()) != EOF)
     {
-	if (column >= 64)
+	if (column >= 64 && prevch != '\\')
 	{
 	    fputs("\",", stdout);
 	    column = 0;
@@ -45,6 +46,7 @@ main(int argc, char *argv[])
 		++column;
 		bol = FALSE;
 	}
+	prevch = ch;
     }
     printf("\",\n    NULL};\n");
 

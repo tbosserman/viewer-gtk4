@@ -93,45 +93,173 @@
   <object class="GtkWindow" id="help_window">
     <property name="deletable">False</property>
     <property name="destroy-with-parent">True</property>
-    <property name="limit-events">True</property>
-    <property name="title">Help</property>
-    <property name="transient-for">top_window</property>
+    <property name="title">Accelerator Keys</property>
     <signal name="close-request" handler="close_help"/>
     <child>
       <object class="GtkBox">
         <property name="orientation">vertical</property>
-        <property name="spacing">0</property>
         <child>
-          <object class="GtkLabel" id="help_label">
-            <property name="label">Accelerator Keys\n
-\n
-+	Zoom in\n
-- 	Zoom out\n
-1	Scale 1:1\n
-f 	Fit image in window\n
-q 	Quit\n
-n or right arrow	Next Image\n
-p or left arrow 	Previous Image\n</property>
-            <property name="margin-bottom">5</property>
-            <property name="margin-end">5</property>
-            <property name="margin-start">5</property>
-            <property name="margin-top">5</property>
-            <property name="vexpand">True</property>
-            <property name="wrap-mode">none</property>
-            <style/>
+          <object class="GtkCenterBox">
+            <property name="center-widget">
+              <object class="GtkSeparator"/>
+            </property>
+            <child type="start">
+              <object class="GtkLabel">
+                <property name="hexpand">True</property>
+                <property name="label">+</property>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkLabel">
+                <property name="hexpand">True</property>
+                <property name="label">Zoom In</property>
+              </object>
+            </child>
           </object>
         </child>
         <child>
           <object class="GtkSeparator"/>
         </child>
         <child>
+          <object class="GtkCenterBox">
+            <property name="center-widget">
+              <object class="GtkSeparator"/>
+            </property>
+            <child type="start">
+              <object class="GtkLabel">
+                <property name="hexpand">True</property>
+                <property name="label">-</property>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkLabel">
+                <property name="hexpand">True</property>
+                <property name="label">Zoom Out</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator"/>
+        </child>
+        <child>
+          <object class="GtkCenterBox">
+            <property name="center-widget">
+              <object class="GtkSeparator"/>
+            </property>
+            <child type="start">
+              <object class="GtkLabel">
+                <property name="hexpand">True</property>
+                <property name="label">1</property>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkLabel">
+                <property name="hexpand">True</property>
+                <property name="label">Scale 1:1</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator"/>
+        </child>
+        <child>
+          <object class="GtkCenterBox">
+            <property name="center-widget">
+              <object class="GtkSeparator"/>
+            </property>
+            <child type="start">
+              <object class="GtkLabel">
+                <property name="hexpand">True</property>
+                <property name="label">f</property>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkLabel">
+                <property name="hexpand">True</property>
+                <property name="label">Fit Image in Window</property>
+                <property name="margin-end">5</property>
+                <property name="margin-start">5</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator"/>
+        </child>
+        <child>
+          <object class="GtkCenterBox">
+            <property name="center-widget">
+              <object class="GtkSeparator"/>
+            </property>
+            <child type="start">
+              <object class="GtkLabel">
+                <property name="hexpand">True</property>
+                <property name="label">n or Right Arrow</property>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkLabel">
+                <property name="hexpand">True</property>
+                <property name="label">Next Image</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator"/>
+        </child>
+        <child>
+          <object class="GtkCenterBox">
+            <property name="center-widget">
+              <object class="GtkSeparator"/>
+            </property>
+            <child type="start">
+              <object class="GtkLabel">
+                <property name="hexpand">True</property>
+                <property name="label">p or Left Arrow</property>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkLabel">
+                <property name="hexpand">True</property>
+                <property name="label">Previous Image</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator"/>
+        </child>
+        <child>
+          <object class="GtkCenterBox">
+            <property name="center-widget">
+              <object class="GtkSeparator"/>
+            </property>
+            <child type="start">
+              <object class="GtkLabel">
+                <property name="hexpand">True</property>
+                <property name="label">q</property>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkLabel">
+                <property name="hexpand">True</property>
+                <property name="label">Quit	</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="margin-bottom">4</property>
+          </object>
+        </child>
+        <child>
           <object class="GtkButton">
-            <property name="can-shrink">True</property>
+            <property name="halign">center</property>
             <property name="label">Close</property>
-            <property name="margin-end">75</property>
-            <property name="margin-start">75</property>
-            <property name="valign">center</property>
-            <property name="width-request">0</property>
             <signal name="clicked" handler="on_help_clicked"/>
           </object>
         </child>

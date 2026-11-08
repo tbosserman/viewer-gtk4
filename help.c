@@ -31,8 +31,7 @@ on_help_clicked()
     gtk_widget_set_visible(GTK_WIDGET(help_window), 0);
 }
 
-// This one isn't used anymore since I set_deletable(false), but I'm leaving
-// it here for "historical purposes".
+// This prevents the window from being deleted when you click on the "X"
 /*********************          CLOSE_HELP           ********************/
 G_MODULE_EXPORT gboolean
 close_help()

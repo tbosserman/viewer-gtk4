@@ -1,4 +1,4 @@
-CFLAGS = -Wall -g
+CFLAGS = -Wall -O
 #CFLAGS += $(shell pkg-config --cflags gtk4)
 #CFLAGS += $(shell pkg-config --cflags glycin-2)
 CFLAGS += $(shell pkg-config --cflags glycin-gtk4-2)

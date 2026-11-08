@@ -18,28 +18,9 @@ extern void		scale(int, float);
 extern void		pinch_zoom(GtkGestureZoom *, double, GtkWidget *);
 extern void		pinch_begin(GtkGestureZoom *, double, GtkWidget *);
 extern void		pinch_end(GtkGestureZoom *, double, GtkWidget *);
+extern void		file_dialog();
 extern GLogWriterOutput	my_logger(GLogLevelFlags, const GLogField *, gsize,
 			    gpointer);
-
-typedef struct {
-    char	*fmt_string;
-    int		action;
-} variant_t;
-
-variant_t variants[] = {
-    { "P|p",		PREV },
-    { "Left",		PREV },
-    { "Up",		PREV },
-    { "N|n",		NEXT },
-    { "Right",		NEXT },
-    { "Down",		NEXT },
-    { "F|f",		FILL },
-    { "Q|a",		QUIT },
-    { "plus",		SCALE_UP },
-    { "minus",		SCALE_DOWN },
-    { "1",		SCALE_1_TO_1 },
-    { NULL,			  0    }
-};
 
 /********************            LOAD_UI             ********************/
 void
@@ -72,7 +53,8 @@ key_pressed(GtkEventControllerKey *self, guint keyval, guint keycode,
     gboolean	retcode;
 
     retcode = true;
-    //fprintf(stderr, "key_pressed(): keyval=%04X\n", keyval);
+    //fprintf(stderr, "key_pressed(): keyval=%04X  keycode=%04X  state=%X\n",
+	keyval, keycode, state);
     switch(keyval)
     {
 	case GDK_KEY_Right:
@@ -100,6 +82,13 @@ key_pressed(GtkEventControllerKey *self, guint keyval, guint keycode,
 	    break;
 	case GDK_KEY_question:
 	    display_help();
+	    break;
+	case GDK_KEY_o:
+	    // GDK_CONTROL_MASK
+	    if (state == GDK_CONTROL_MASK)
+		file_dialog();
+	    else
+		retcode = false;
 	    break;
 	default:
 	    retcode = false;

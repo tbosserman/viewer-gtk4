@@ -10,7 +10,7 @@ LDFLAGS=-Wl,--export-dynamic
 
 all: gen viewer
 
-viewer: main.o callbacks.o init.o show.o help.o log.o
+viewer: main.o callbacks.o init.o show.o help.o log.o file.o
 	$(CC) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
 main.o: main.c viewer.h

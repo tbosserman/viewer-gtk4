@@ -72,8 +72,6 @@ process_args(int argc, char *argv[])
 	}
     }
 
-    if (argc < 2)
-	usage();
     num_files = 0;
     for (i = optind; i < argc && i < MAX_FILES; ++i)
 	filenames[num_files++] = g_strdup(argv[i]);
@@ -90,11 +88,6 @@ main(int argc, char *argv[])
     progname += (i + 1);
 
     process_args(argc, argv);
-    if (num_files == 0)
-    {
-	fprintf(stderr, "You didn't specify any files to display\n");
-	exit(1);
-    }
     init(ui_file, geometry);
     done = 0;
     show_file(0);

@@ -76,7 +76,7 @@ process_args(int argc, char *argv[])
 	usage();
     num_files = 0;
     for (i = optind; i < argc && i < MAX_FILES; ++i)
-	filenames[num_files++] = argv[i];
+	filenames[num_files++] = g_strdup(argv[i]);
 }
 
 /********************              MAIN              ********************/

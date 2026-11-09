@@ -5,6 +5,7 @@
 #include "viewer.h"
 
 extern GtkBuilder	*ui_xml;
+extern GtkWindow	*top_window;
 extern void		alert(const char *fmt, ...);
 
 int			filenum, num_files;
@@ -103,11 +104,13 @@ void
 show_file(int num)
 {
     char		title[1024];
-    GtkWindow		*window;
     GFile		*gfile;
     GlyLoader		*loader;
     GlyImage		*image;
     GError		*error;
+
+    if (num >= num_files)
+	return;
 
     if (texture)
 	g_object_unref((GObject *)texture);
@@ -148,10 +151,9 @@ show_file(int num)
     texture = gly_gtk_frame_get_texture(frame);
     scale(SCALE_FILL, 0.0);
     
-    window = (GtkWindow *)gtk_builder_get_object(ui_xml, "top_window");
     snprintf(title, sizeof(title), "%s (%dx%d)", filenames[num], 
 	image_width, image_height);
-    gtk_window_set_title(window, title);
+    gtk_window_set_title(top_window, title);
 
     g_object_unref((GObject *)gfile);
     filenum = num;

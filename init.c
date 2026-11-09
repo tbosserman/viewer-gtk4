@@ -5,6 +5,7 @@
 #include "gtkbuilder.h"
 
 GtkBuilder		*ui_xml;
+GtkWindow		*top_window;
 
 extern int		default_width, default_height;
 
@@ -18,7 +19,7 @@ extern void		scale(int, float);
 extern void		pinch_zoom(GtkGestureZoom *, double, GtkWidget *);
 extern void		pinch_begin(GtkGestureZoom *, double, GtkWidget *);
 extern void		pinch_end(GtkGestureZoom *, double, GtkWidget *);
-extern void		file_dialog();
+extern void		file_dialog(), init_file_dialog();
 extern GLogWriterOutput	my_logger(GLogLevelFlags, const GLogField *, gsize,
 			    gpointer);
 
@@ -53,9 +54,8 @@ key_pressed(GtkEventControllerKey *self, guint keyval, guint keycode,
     gboolean	retcode;
 
     retcode = true;
-    //fprintf(stderr, "key_pressed(): keyval=%04X  keycode=%04X  state=%X\n",
-	keyval, keycode, state);
-    switch(keyval)
+    //fprintf(stderr, "key_pressed(): keyval=%04X  keycode=%04X  state=%X\n", keyval, keycode, state);
+    switch(keyval | (state << 16))
     {
 	case GDK_KEY_Right:
 	case GDK_KEY_n:
@@ -83,12 +83,9 @@ key_pressed(GtkEventControllerKey *self, guint keyval, guint keycode,
 	case GDK_KEY_question:
 	    display_help();
 	    break;
-	case GDK_KEY_o:
+	case GDK_KEY_o | (GDK_CONTROL_MASK << 16):
 	    // GDK_CONTROL_MASK
-	    if (state == GDK_CONTROL_MASK)
-		file_dialog();
-	    else
-		retcode = false;
+	    file_dialog();
 	    break;
 	default:
 	    retcode = false;
@@ -102,7 +99,6 @@ void
 init(char *ui_file, char *geometry)
 {
     char		*s;
-    GtkWindow		*window;
     GtkWidget		*picture;
     GtkGesture		*gesture;
     GtkEventController	*controller;
@@ -120,15 +116,15 @@ init(char *ui_file, char *geometry)
     else
 	load_ui();
 
-    window = (GtkWindow *)gtk_builder_get_object(ui_xml, "top_window");
-    gtk_widget_grab_focus((GtkWidget *)window);
-    gtk_window_set_default_size(window, default_width, default_height);
+    top_window = (GtkWindow *)gtk_builder_get_object(ui_xml, "top_window");
+    gtk_widget_grab_focus((GtkWidget *)top_window);
+    gtk_window_set_default_size(top_window, default_width, default_height);
 
     // Setup a key press event handler so we can capture stuff like arrow keys
     controller = gtk_event_controller_key_new();
-    g_signal_connect(controller, "key-pressed", G_CALLBACK(key_pressed), window);
+    g_signal_connect(controller, "key-pressed", G_CALLBACK(key_pressed), top_window);
     gtk_event_controller_set_propagation_phase(controller, GTK_PHASE_BUBBLE);
-    gtk_widget_add_controller(GTK_WIDGET(window), GTK_EVENT_CONTROLLER(controller));
+    gtk_widget_add_controller(GTK_WIDGET(top_window), GTK_EVENT_CONTROLLER(controller));
 
     // Setup the handler for pinch / zoom events on the mouse pad.
     picture = GTK_WIDGET(gtk_builder_get_object(ui_xml, "image_window"));
@@ -142,6 +138,8 @@ init(char *ui_file, char *geometry)
 
     init_help();
     g_log_set_writer_func(my_logger, NULL, NULL);
+
+    init_file_dialog();
     
-    gtk_window_present(window);
+    gtk_window_present(top_window);
 }

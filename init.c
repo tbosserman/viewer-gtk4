@@ -69,6 +69,7 @@ key_pressed(GtkEventControllerKey *self, guint keyval, guint keycode,
 	    scale(SCALE_DOWN, 0.0);
 	    break;
 	case GDK_KEY_plus:
+	case GDK_KEY_plus | (GDK_SHIFT_MASK << 16):
 	    scale(SCALE_UP, 0.0);
 	    break;
 	case GDK_KEY_1:
@@ -81,6 +82,7 @@ key_pressed(GtkEventControllerKey *self, guint keyval, guint keycode,
 	    on_quit();
 	    break;
 	case GDK_KEY_question:
+	case GDK_KEY_question | (GDK_SHIFT_MASK << 16):
 	    display_help();
 	    break;
 	case GDK_KEY_o | (GDK_CONTROL_MASK << 16):

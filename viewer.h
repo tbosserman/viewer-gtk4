@@ -3,7 +3,7 @@
 # define TRUE		1
 #endif
 #define MAX_FILES	2000
-#define VERSION		"2.1"
+#define VERSION		"2.2"
 #define DEFAULT_UI_FILE	"Viewer-gtk4.ui"
 #define DEFAULT_GEOMETRY "1024x768"
 #define PREV		0

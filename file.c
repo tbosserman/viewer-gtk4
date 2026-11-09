@@ -23,10 +23,11 @@ dialog_cb(GObject *obj, GAsyncResult *res, gpointer data)
     GError	*err = NULL;
 
     list = gtk_file_dialog_open_multiple_finish(dialog, res, &err);
-    if (err && err->code != 2)
+    if (err)
     {
-	fprintf(stderr, "dialog_cb: code=%d message='%s'\n", err->code,
-	    err->message);
+	if (err->code != 2)
+	    fprintf(stderr, "dialog_cb: code=%d message='%s'\n", err->code,
+		err->message);
 	g_error_free(err);
 	return;
     }

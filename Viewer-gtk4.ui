@@ -240,6 +240,28 @@
             <child type="start">
               <object class="GtkLabel">
                 <property name="hexpand">True</property>
+                <property name="label">CTRL-o</property>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkLabel">
+                <property name="hexpand">True</property>
+                <property name="label">Open File(s) Dialog</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator"/>
+        </child>
+        <child>
+          <object class="GtkCenterBox">
+            <property name="center-widget">
+              <object class="GtkSeparator"/>
+            </property>
+            <child type="start">
+              <object class="GtkLabel">
+                <property name="hexpand">True</property>
                 <property name="label">q</property>
               </object>
             </child>

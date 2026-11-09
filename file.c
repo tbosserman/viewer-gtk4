@@ -42,6 +42,7 @@ dialog_cb(GObject *obj, GAsyncResult *res, gpointer data)
 	filenames[num_files++] = fname;
 	g_object_unref(item);
     }
+    g_object_unref(list);
 
     show_file(0);
 }

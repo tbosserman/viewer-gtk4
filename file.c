@@ -1,15 +1,7 @@
 #include <gtk/gtk.h>
 #include "viewer.h"
 
-extern int		num_files;
-extern char		*filenames[];
-extern GtkWindow	*top_window;
-
-extern void		show_file(int);
-
-static GtkFileDialog	*dialog;
-
-/*********************               X               ********************/
+extern viewer_app_t	*app;
 
 /*********************          DIALOG_CB            ********************/
 void
@@ -22,7 +14,7 @@ dialog_cb(GObject *obj, GAsyncResult *res, gpointer data)
     GListModel	*list;
     GError	*err = NULL;
 
-    list = gtk_file_dialog_open_multiple_finish(dialog, res, &err);
+    list = gtk_file_dialog_open_multiple_finish(app->file_dialog, res, &err);
     if (err)
     {
 	if (err->code != 2)
@@ -32,32 +24,33 @@ dialog_cb(GObject *obj, GAsyncResult *res, gpointer data)
 	return;
     }
 
-    for (i = 0; i < num_files; ++i)
-	g_free(filenames[i]);
-    num_files = 0;
+    for (i = 0; i < app->num_files; ++i)
+	g_free(app->filenames[i]);
+    app->num_files = 0;
 
     for (i = 0; (ptr = g_list_model_get_item(list, i)) != NULL; ++i)
     {
 	item = (GFile *)ptr;
 	fname = g_file_get_path(item);
-	filenames[num_files++] = fname;
+	app->filenames[app->num_files++] = fname;
 	g_object_unref(item);
     }
     g_object_unref(list);
 
-    show_file(0);
+    show_file(app, 0);
 }
 
 /*********************         FILE_DIALOG           ********************/
 void
-file_dialog()
+file_dialog(viewer_app_t *app)
 {
-    gtk_file_dialog_open_multiple(dialog, top_window, NULL, dialog_cb, NULL);
+    gtk_file_dialog_open_multiple(app->file_dialog, app->top_window, NULL,
+	dialog_cb, NULL);
 }
 
 /*********************       INIT_FILE_DIALOG        ********************/
-void
+GtkFileDialog *
 init_file_dialog()
 {
-    dialog = gtk_file_dialog_new();
+    return(gtk_file_dialog_new());
 }

@@ -12,20 +12,15 @@
 #include <gtk/gtk.h>
 #include "viewer.h"
 
-extern GtkBuilder	*ui_xml;
-extern int		done;
-extern void		show_file(int filenum);
-extern void		scale(int operation, float new_factor);
-
-extern int		filenum, num_files;
-extern char		*filenames[MAX_FILES];
+extern viewer_app_t	*app;
 
 /********************       ON_WINDOW1_DESTROY       ********************/
 G_MODULE_EXPORT void
 on_window1_destroy                      (GObject         *object,
                                         gpointer         user_data)
 {
-    done = 1;
+    app->done = true;
+    g_application_quit(G_APPLICATION(app->app));
 }
 
 /********************            ALLTRIM             ********************/
@@ -58,17 +53,13 @@ alert(const char *fmt, ...)
 {
     va_list		ap;
     char		temp[1024];
-    GtkMessageDialog	*dialog;
-    GtkLabel		*label;
 
     temp[sizeof(temp)-1] = '\0';
     va_start(ap, fmt);
     vsnprintf(temp, sizeof(temp)-1, fmt, ap);
     va_end(ap);
-    dialog = (GtkMessageDialog *)gtk_builder_get_object(ui_xml, "alert_window");
-    label = (GtkLabel *)gtk_builder_get_object(ui_xml, "alert_label");
-    gtk_label_set_label(label, temp);
-    gtk_widget_set_visible(GTK_WIDGET(dialog), 1);
+    gtk_label_set_label(app->alert_label, temp);
+    gtk_widget_set_visible(GTK_WIDGET(app->alert_dialog), true);
 }
 
 
@@ -76,10 +67,7 @@ alert(const char *fmt, ...)
 G_MODULE_EXPORT void
 on_alert_close()
 {
-    GtkMessageDialog	*dialog;
-
-    dialog = (GtkMessageDialog *)gtk_builder_get_object(ui_xml, "alert_window");
-    gtk_widget_set_visible(GTK_WIDGET(dialog), 0);
+    gtk_widget_set_visible(GTK_WIDGET(app->alert_dialog), false);
 }
 
 
@@ -87,7 +75,8 @@ on_alert_close()
 G_MODULE_EXPORT void
 on_quit()
 {
-    done = 1;
+    app->done = true;
+    g_application_quit(G_APPLICATION(app->app));
 }
 
 /********************            ON_ABOUT            ********************/
@@ -101,8 +90,8 @@ on_about()
 G_MODULE_EXPORT void
 on_prev()
 {
-    if (filenum > 0)
-	show_file(filenum-1);
+    if (app->filenum > 0)
+	show_file(app, app->filenum-1);
     else
 	alert("You are already at the first file");
 }
@@ -111,15 +100,15 @@ on_prev()
 G_MODULE_EXPORT void
 on_next()
 {
-    if (filenum >= num_files-1)
+    if (app->filenum >= app->num_files-1)
 	alert("You are already at the last file");
     else
-	show_file(filenum+1);
+	show_file(app, app->filenum+1);
 }
 
 /********************            ON_FILL             ********************/
 G_MODULE_EXPORT void
 on_fill()
 {
-    scale(SCALE_FILL, 0.0);
+    scale(app, SCALE_FILL, 0.0);
 }

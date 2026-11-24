@@ -6,14 +6,10 @@
 #include <getopt.h>
 #include "viewer.h"
 
-extern void		init(char *, char *);
-extern void		show_file(int);
-extern int		num_files;
-extern char		*filenames[MAX_FILES];
+#define APPLICATION	TRUE
 
 char			*progname;
-int			done;
-char			*geometry;
+viewer_app_t		*app;
 
 static char		*ui_file;
 
@@ -45,11 +41,13 @@ version_info()
 }
 
 /********************          PROCESS_ARGS          ********************/
-void
-process_args(int argc, char *argv[])
+char *
+process_args(viewer_app_t *app, int argc, char *argv[])
 {
     int		i, ch;
+    char	*geometry;
 
+    geometry = NULL;
     while ((ch = getopt_long(argc, argv, "Vh?", longopts, NULL)) != -1)
     {
 	switch(ch)
@@ -72,9 +70,10 @@ process_args(int argc, char *argv[])
 	}
     }
 
-    num_files = 0;
+    app->num_files = 0;
     for (i = optind; i < argc && i < MAX_FILES; ++i)
-	filenames[num_files++] = g_strdup(argv[i]);
+	app->filenames[app->num_files++] = g_strdup(argv[i]);
+    return(geometry);
 }
 
 /********************              MAIN              ********************/
@@ -82,17 +81,27 @@ int
 main(int argc, char *argv[])
 {
     int		i;
+    char	*geometry;
 
     progname = argv[0];
     for (i = strlen(progname) - 1; i >= 0 && progname[i] != '/'; --i);
     progname += (i + 1);
 
-    process_args(argc, argv);
-    init(ui_file, geometry);
-    done = 0;
-    show_file(0);
-    while (!done)
+    if ((app = malloc(sizeof(viewer_app_t))) == NULL)
+    {
+	fprintf(stderr, "%s: Out of memory\n", progname);
+	exit(1);
+    }
+    geometry = process_args(app, argc, argv);
+    init(app, ui_file, geometry);
+    app->done = false;
+    show_file(app, 0);
+#ifdef APPLICATION
+    g_application_run(G_APPLICATION(app->app), 0, NULL);
+#else
+    while (!app->done)
 	g_main_context_iteration (NULL, TRUE);
+#endif
 
     exit(0);
 }

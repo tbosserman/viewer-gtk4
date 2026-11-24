@@ -1,34 +1,31 @@
 #include <gtk/gtk.h>
 #include "viewer.h"
 
-#define HELP_FILE	"Help.html"
-
-extern GtkBuilder	*ui_xml;
-
-static GtkWindow	*help_window;
-
-/*********************               X               ********************/
-
 /*********************          INIT_HELP            ********************/
 void
-init_help()
+init_help(viewer_app_t *app)
 {
-    help_window = (GtkWindow *)gtk_builder_get_object(ui_xml, "help_window");
-    gtk_window_set_deletable(help_window, false);
+    GtkWindow	*win;
+
+    win = GTK_WINDOW(gtk_builder_get_object(app->ui, "help_window"));
+    gtk_window_set_deletable(win, false);
+    app->help_window = win;
 }
 
 /*********************         DISPLAY_HELP          ********************/
 void
-display_help()
+display_help(viewer_app_t *app)
 {
-    gtk_widget_set_visible(GTK_WIDGET(help_window), 1);
+    gtk_widget_set_visible(GTK_WIDGET(app->help_window), true);
 }
 
 /*********************        ON_HELP_CLICKED        ********************/
 G_MODULE_EXPORT void
 on_help_clicked()
 {
-    gtk_widget_set_visible(GTK_WIDGET(help_window), 0);
+    extern viewer_app_t	*app;
+
+    gtk_widget_set_visible(GTK_WIDGET(app->help_window), false);
 }
 
 // This prevents the window from being deleted when you click on the "X"

@@ -4,14 +4,6 @@
 #include <math.h>
 #include "viewer.h"
 
-extern GtkBuilder	*ui_xml;
-extern GtkWindow	*top_window;
-extern void		alert(const char *fmt, ...);
-
-int			filenum, num_files;
-int			default_width, default_height;
-char			*filenames[MAX_FILES];
-
 static GdkTexture	*texture = NULL;
 static GlyFrame		*frame = NULL;
 static GdkPaintable	*paintable = NULL;
@@ -19,47 +11,43 @@ static uint32_t		image_width, image_height;
 static float		scale_factor = 1.0;
 static float		pinch_base;
 
-/*********************               X               ********************/
-
 /********************        REMOVE_FROM_LIST        ********************/
 void
-remove_from_list(int num)
+remove_from_list(viewer_app_t *app, int num)
 {
     int 	i;
 
-    for (i = num; i < num_files-1; ++i)
-	filenames[i] = filenames[i+1];
-    --num_files;
+    for (i = num; i < app->num_files-1; ++i)
+	app->filenames[i] = app->filenames[i+1];
+    --app->num_files;
 }
 
 /************************************************************************
  ********************             SCALE              ********************
  ************************************************************************/
 void
-scale(int operation, float new_factor)
+scale(viewer_app_t *app, int operation, float new_factor)
 {
     GtkWidget		*widget;
     GtkSnapshot		*snap;
-    GtkPicture		*gtk_pic;
     int			widget_width, widget_height;
     float		xfactor, yfactor, width, height, min_factor;
     graphene_rect_t	rect;
 
-    widget = (GtkWidget *)gtk_builder_get_object(ui_xml, "scroll_window");
+    widget = GTK_WIDGET(app->scroll_window);
     if ((widget_width = gtk_widget_get_width(widget)) == 0)
-	widget_width = default_width;
+	widget_width = app->default_width;
     if ((widget_height = gtk_widget_get_height(widget)) == 0)
-	widget_height = default_height;
+	widget_height = app->default_height;
     xfactor = (float)widget_width / (float)image_width;
     yfactor = (float)widget_height / (float)image_height;
     min_factor = fmin(xfactor, yfactor);
-    gtk_pic = (GtkPicture *)gtk_builder_get_object(ui_xml, "image_window");
 
     switch(operation)
     {
 	case SCALE_FILL:
 	    scale_factor = min_factor;
-	    gtk_picture_set_can_shrink(gtk_pic, TRUE);
+	    gtk_picture_set_can_shrink(app->image_window, TRUE);
 	    break;
 	case SCALE_UP:
 	    scale_factor += 0.1;
@@ -77,7 +65,7 @@ scale(int operation, float new_factor)
 	    break;
     }
     if (operation != SCALE_FILL)
-	gtk_picture_set_can_shrink(gtk_pic, FALSE);
+	gtk_picture_set_can_shrink(app->image_window, FALSE);
 
     if (paintable)
 	g_object_unref((GObject *)paintable);
@@ -96,12 +84,12 @@ scale(int operation, float new_factor)
     rect = GRAPHENE_RECT_INIT(0.0, 0.0, width, height);
     gtk_snapshot_append_texture(snap, texture, &rect);
     paintable = gtk_snapshot_free_to_paintable(snap, &rect.size);
-    gtk_picture_set_paintable(gtk_pic, paintable);
+    gtk_picture_set_paintable(app->image_window, paintable);
 }
 
 /********************           SHOW_FILE            ********************/
 void
-show_file(int num)
+show_file(viewer_app_t *app, int num)
 {
     char		title[1024];
     GFile		*gfile;
@@ -109,7 +97,7 @@ show_file(int num)
     GlyImage		*image;
     GError		*error;
 
-    if (num >= num_files)
+    if (num >= app->num_files)
 	return;
 
     if (texture)
@@ -123,7 +111,7 @@ show_file(int num)
     paintable = NULL;
 
     error = NULL;
-    gfile = g_file_new_for_path (filenames[num]);
+    gfile = g_file_new_for_path(app->filenames[num]);
     loader = gly_loader_new(gfile);
     image = gly_loader_load(loader, &error);
     g_object_unref((GObject *)loader);
@@ -132,7 +120,7 @@ show_file(int num)
 	alert(error->message);
 	g_clear_error(&error);
 	g_object_unref((GObject *)gfile);
-	remove_from_list(num);
+	remove_from_list(app, num);
 	return;
     }
     frame = gly_image_next_frame(image, &error);
@@ -141,7 +129,7 @@ show_file(int num)
 	alert(error->message);
 	g_clear_error(&error);
 	g_object_unref((GObject *)gfile);
-	remove_from_list(num);
+	remove_from_list(app, num);
 	return;
     }
     g_object_unref((GObject *)image);
@@ -149,21 +137,23 @@ show_file(int num)
     image_width = gly_frame_get_width(frame);
     image_height = gly_frame_get_height(frame);
     texture = gly_gtk_frame_get_texture(frame);
-    scale(SCALE_FILL, 0.0);
+    scale(app, SCALE_FILL, 0.0);
     
-    snprintf(title, sizeof(title), "%s (%dx%d)", filenames[num], 
+    snprintf(title, sizeof(title), "%s (%dx%d)", app->filenames[num], 
 	image_width, image_height);
-    gtk_window_set_title(top_window, title);
+    gtk_window_set_title(app->top_window, title);
 
     g_object_unref((GObject *)gfile);
-    filenum = num;
+    app->filenum = num;
 }
 
 /*********************          PINCH_ZOOM           ********************/
 void
 pinch_zoom(GtkGestureZoom *gesture, double factor, GtkWidget *widget)
 {
-    scale(SCALE_SET, pinch_base * factor);
+    extern viewer_app_t	*app;
+
+    scale(app, SCALE_SET, pinch_base * factor);
 }
 
 /*********************         PINCH_BEGIN           ********************/
